@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cat Subway Runner</title>
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <main id="app">
+    <canvas id="game"></canvas>
+
+    <section id="menu" class="screen active">
+      <div id="welcomeGift" class="cloud-badge">Welcome gift: 1000 paw coins</div>
+      <div class="title-block">
+        <div class="logo-cat"><span></span></div>
+        <p class="kicker">BY A1123309</p>
+        <h1>Cat Subway Runner</h1>
+      </div>
+      <div class="cat-card">
+        <div id="skinPreview" class="skin-preview"></div>
+        <div>
+          <strong id="previewName">Hoodie Cat</strong>
+          <small id="previewGear">Paw Cap - Kitty Board</small>
+        </div>
+      </div>
+      <div class="stats">
+        <span>Best <b id="bestMenu">0</b></span>
+        <span>Paw Coins <b id="coinsMenu">0</b></span>
+      </div>
+      <nav class="menu-buttons">
+        <button class="primary" data-action="play">Play</button>
+        <button data-screen="shop">Shop</button>
+        <button data-screen="missions">Missions</button>
+        <button data-screen="settings">Settings</button>
+      </nav>
+    </section>
+
+    <section id="hud" class="hud hidden">
+      <div><small>Score</small><b id="score">0</b></div>
+      <div><small>Run Paw</small><b id="runCoins">0</b></div>
+      <div><small>Total</small><b id="totalCoins">0</b></div>
+      <div><small>Best</small><b id="bestHud">0</b></div>
+      <div id="powerups" class="powerups"></div>
+      <button id="pauseBtn" class="round">II</button>
+    </section>
+
+    <section id="pause" class="screen">
+      <div class="panel">
+        <h2>Paused</h2>
+        <button class="primary" data-action="resume">Resume</button>
+        <button data-action="play">Restart</button>
+        <button data-action="menu">Main Menu</button>
+      </div>
+    </section>
+
+    <section id="over" class="screen">
+      <div class="panel">
+        <h2>Officer Caught Up</h2>
+        <div class="results">
+          <span>Score</span><b id="finalScore">0</b>
+          <span>Paw coins</span><b id="finalCoins">0</b>
+          <span>Distance</span><b id="finalDistance">0 m</b>
+          <span>Best</span><b id="finalBest">0</b>
+        </div>
+        <button class="primary" data-action="play">Run Again</button>
+        <button data-action="menu">Main Menu</button>
+      </div>
+    </section>
+
+    <section id="shop" class="screen scroll">
+      <div class="wide-panel">
+        <header>
+          <button class="round" data-action="menu">Back</button>
+          <div><p class="kicker">Character and powers</p><h2>Kitty Shop</h2></div>
+          <strong class="coin-pill" id="shopCoins">0</strong>
+        </header>
+        <div id="shopPreview" class="shop-showcase"></div>
+        <div id="shopTabs" class="tabs"></div>
+        <div id="shopGrid" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="missions" class="screen scroll">
+      <div class="wide-panel">
+        <header>
+          <button class="round" data-action="menu">Back</button>
+          <div><p class="kicker">Paw goals</p><h2>Missions</h2></div>
+          <strong class="coin-pill" id="missionCoins">0</strong>
+        </header>
+        <div id="missionList" class="mission-list"></div>
+      </div>
+    </section>
+
+    <section id="settings" class="screen">
+      <div class="panel">
+        <h2>Settings</h2>
+        <label>Music <input id="music" type="checkbox" /></label>
+        <label>Sound FX <input id="sfx" type="checkbox" /></label>
+        <label>Volume <input id="volume" type="range" min="0" max="1" step=".05" /></label>
+        <button id="resetBest">Reset High Score</button>
+        <button id="resetAll" class="danger">Reset All Data</button>
+        <button data-action="menu">Main Menu</button>
+      </div>
+    </section>
+
+    <div id="toast"></div>
+    <div id="flash"></div>
+  </main>
+  <script src="assets/three.min.js"></script>
+  <script src="script.js?v=14"></script>
+</body>
+</html>
