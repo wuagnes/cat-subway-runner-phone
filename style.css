@@ -19,10 +19,10 @@ body {
   color: var(--ink);
   background: linear-gradient(180deg, #8bdcff, #ffc7dc);
   min-height: 100%;
-  touch-action: none;
+  touch-action: manipulation;
   user-select: none;
 }
-canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 button, input { font: inherit; }
 button {
   min-height: 46px;
@@ -48,7 +48,7 @@ button.primary {
 button.danger { color: #fff; background: linear-gradient(135deg, #ff6b6b, #e14662); box-shadow: 0 7px 0 #ad3045; }
 button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
 
-.hidden { display: none !important; }
+.hidden, .touch-controls.hidden { display: none !important; }
 .screen {
   position: fixed;
   inset: 0;
@@ -69,7 +69,7 @@ button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
     linear-gradient(180deg, rgba(139,220,255,.18), rgba(255,199,220,.2));
   pointer-events: none;
 }
-.scroll { align-items: flex-start; overflow: auto; overscroll-behavior: contain; }
+.scroll { align-items: flex-start; overflow: auto; overscroll-behavior: contain; touch-action: pan-y; }
 #menu {
   flex-direction: column;
   justify-content: center;
@@ -213,6 +213,34 @@ h2 { font-size: clamp(2rem, 5vw, 3.1rem); }
 }
 .powerups { display: flex; flex-wrap: wrap; gap: 8px; box-shadow: none !important; background: transparent !important; border: 0 !important; backdrop-filter: none !important; padding: 0 !important; }
 .powerups span { border-radius: 999px; padding: 9px 12px; font-weight: 1000; color: #0c6653; }
+
+.touch-controls {
+  position: fixed;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 9;
+  display: none;
+  grid-template-columns: repeat(4, 58px);
+  gap: 10px;
+  pointer-events: auto;
+}
+.touch-controls button {
+  min-width: 58px;
+  min-height: 58px;
+  padding: 0;
+  border-radius: 20px;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: #6c2e32;
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,217,226,.96));
+  border: 3px solid rgba(255,255,255,.88);
+  box-shadow: 0 8px 0 rgba(214, 121, 68, .48), 0 14px 26px rgba(80,54,74,.2);
+}
+.touch-controls button:active {
+  transform: translateY(5px) scale(.96);
+  box-shadow: 0 3px 0 rgba(214, 121, 68, .55), 0 8px 18px rgba(80,54,74,.18);
+}
 
 .panel, .wide-panel {
   position: relative;
@@ -539,6 +567,7 @@ input[type="range"] { width: 170px; accent-color: var(--pink); }
 @keyframes hit { 0%,100% { opacity: 0; } 40% { opacity: 1; } }
 
 @media (max-width: 760px) {
+  .touch-controls { display: grid; }
   .screen {
     padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
   }
@@ -648,6 +677,16 @@ input[type="range"] { width: 170px; accent-color: var(--pink); }
   .stats { font-size: .88rem; padding: 8px 10px; }
   .hud > div:nth-child(4) { display: none; }
   .hud { grid-template-columns: repeat(2, minmax(0, 1fr)) 46px; }
+  .touch-controls {
+    grid-template-columns: repeat(4, 50px);
+    gap: 8px;
+  }
+  .touch-controls button {
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 17px;
+    font-size: 1.45rem;
+  }
   .panel h2,
   .wide-panel header h2 {
     font-size: 1.75rem;
@@ -688,4 +727,18 @@ input[type="range"] { width: 170px; accent-color: var(--pink); }
   .menu-buttons { grid-template-columns: repeat(4, minmax(96px, 1fr)); }
   .menu-buttons button { min-height: 46px; }
   .wide-panel { max-height: calc(100dvh - 12px); }
+  .touch-controls {
+    left: auto;
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    transform: none;
+    grid-template-columns: repeat(4, 48px);
+    gap: 7px;
+  }
+  .touch-controls button {
+    min-width: 48px;
+    min-height: 44px;
+    border-radius: 15px;
+    font-size: 1.35rem;
+  }
 }

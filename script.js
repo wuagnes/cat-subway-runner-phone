@@ -468,16 +468,39 @@ class Game {
       if (b.dataset.screen) this.show(b.dataset.screen);
       if (b.dataset.action) this.action(b.dataset.action);
     });
+    document.querySelectorAll("[data-control]").forEach(btn => {
+      btn.addEventListener("pointerdown", e => {
+        e.preventDefault();
+        this.control(btn.dataset.control);
+      });
+    });
+    let touchStart = null;
+    const canvas = document.getElementById("game");
+    canvas.addEventListener("pointerdown", e => {
+      if (e.pointerType === "mouse") return;
+      touchStart = { x: e.clientX, y: e.clientY, t: performance.now() };
+    });
+    canvas.addEventListener("pointerup", e => {
+      if (!touchStart || e.pointerType === "mouse") return;
+      const dx = e.clientX - touchStart.x;
+      const dy = e.clientY - touchStart.y;
+      const ax = Math.abs(dx);
+      const ay = Math.abs(dy);
+      const quickTap = ax < 18 && ay < 18 && performance.now() - touchStart.t < 260;
+      touchStart = null;
+      if (quickTap && this.state !== "running") return this.start();
+      if (Math.max(ax, ay) < 28) return;
+      this.control(ax > ay ? (dx < 0 ? "left" : "right") : (dy < 0 ? "jump" : "slide"));
+    });
     addEventListener("keydown", e => {
       const k = e.key.toLowerCase();
       if (["arrowleft", "arrowright", "arrowup", "arrowdown", "a", "d", "w", "s", " ", "p"].includes(k)) e.preventDefault();
       if (k === " " && this.state !== "running") return this.start();
       if (k === "p") return this.state === "running" ? this.pause() : this.resume();
-      if (this.state !== "running") return;
-      if (k === "arrowleft" || k === "a") this.lane = Math.max(0, this.lane - 1);
-      if (k === "arrowright" || k === "d") this.lane = Math.min(2, this.lane + 1);
-      if ((k === "arrowup" || k === "w") && this.y <= .02) { this.vy = this.power.jump ? 16 : 13; this.sound.play("jump"); this.missions.add("jump"); }
-      if (k === "arrowdown" || k === "s") { this.slide = .72; this.sound.play("slide"); this.missions.add("slide"); }
+      if (k === "arrowleft" || k === "a") this.control("left");
+      if (k === "arrowright" || k === "d") this.control("right");
+      if (k === "arrowup" || k === "w") this.control("jump");
+      if (k === "arrowdown" || k === "s") this.control("slide");
     });
     document.getElementById("pauseBtn").onclick = () => this.pause();
     document.getElementById("music").onchange = e => { this.store.data.settings.music = e.target.checked; this.store.save(); e.target.checked ? this.sound.startMusic() : this.sound.stopMusic(); };
@@ -491,9 +514,25 @@ class Game {
     document.getElementById("resetAll").onclick = () => { localStorage.removeItem(KEY); location.reload(); };
   }
   action(a) { if (a === "play") this.start(); if (a === "resume") this.resume(); if (a === "menu") this.menu(); }
+  control(type) {
+    if (this.state !== "running") return;
+    if (type === "left") this.lane = Math.max(0, this.lane - 1);
+    if (type === "right") this.lane = Math.min(2, this.lane + 1);
+    if (type === "jump" && this.y <= .02) {
+      this.vy = this.power.jump || this.power.jetpack ? 16 : 13;
+      this.sound.play("jump");
+      this.missions.add("jump");
+    }
+    if (type === "slide") {
+      this.slide = .72;
+      this.sound.play("slide");
+      this.missions.add("slide");
+    }
+  }
   show(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
     document.getElementById("hud").classList.toggle("hidden", id !== "game");
+    document.getElementById("touchControls").classList.toggle("hidden", id !== "game");
     this.refresh();
     this.updateWelcomeGift();
     if (id === "missions") this.renderMissions();
